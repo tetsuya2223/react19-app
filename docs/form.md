@@ -106,3 +106,28 @@ export async function updateName(formData: FormData) {
 | サーバ通信の統合 | fetch, axios など         | App Router + server functions |
 
 React 19 により、フォーム関連の開発体験が大幅に改善されました。
+
+---
+
+## ✅ 補足：FormData による入力値の取得
+
+React 19 の `<form action={...}>` では、フォーム送信時に自動的に `FormData` が生成され、`action` 関数や `useActionState` の引数として渡されます。
+
+これにより、JavaScript 側で `input` の状態を個別に管理しなくても、`formData.get("name")` のようにして簡単に入力値を取得できます。
+
+```tsx
+const [state, dispatch] = useActionState(
+  async (prevState, formData) => {
+    const name = formData.get("name"); // ← ここで name を取得
+    return { ...prevState, name };
+  },
+  { name: "" }
+);
+
+<form action={dispatch}>
+  <input name="name" />
+  <button>送信</button>
+</form>;
+```
+
+この仕組みにより、冗長な状態管理や `onChange` イベントが不要になるため、フォーム周りの実装が非常にシンプルになります。
